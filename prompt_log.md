@@ -18,7 +18,14 @@ Write Python code to perform exploratory data analysis on a dataframe called 'im
 ---
 
 ## Phase 2: Text Preprocessing
-[Prompts will be added as project progresses]
+### Prompt #4: Text Cleaning
+Write a Python function called clean_text that takes a text string and performs these preprocessing steps: 1) Convert to lowercase, 2) Remove HTML tags using BeautifulSoup or regex, 3) Remove special characters and punctuation keeping only letters and spaces, 4) Remove extra whitespaces. Apply this function to all reviews in the imdb_df dataframe and create a new column called 'cleaned_review'. Display before and after examples of 3 reviews.
+
+### Prompt #5: Tokenization and Stopword Removal
+Write Python code to tokenize the cleaned reviews using NLTK. Remove stopwords using NLTK's English stopwords list. Apply lemmatization using WordNetLemmatizer. Create a new column in imdb_df called 'processed_review' containing the processed text. Show the difference between cleaned_review and processed_review for 3 examples. Also display the 20 most common words after processing using a bar chart.
+
+### Prompt #6: Train-Test Split and Vectorization
+Write Python code to split the imdb_df dataset into training (80%) and testing (20%) sets with stratification on sentiment. Use TfidfVectorizer from sklearn with max_features=5000 to convert text to numerical features. Fit the vectorizer on training data only and transform both train and test sets. Display the shapes of X_train, X_test, y_train, y_test and the vocabulary size. Also show a sample of the TF-IDF matrix.
 
 ---
 
