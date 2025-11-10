@@ -30,7 +30,14 @@ Write Python code to split the imdb_df dataset into training (80%) and testing (
 ---
 
 ## Phase 3: Model Training
-[Prompts will be added as project progresses]
+### Prompt #7: Train Naive Bayes Model
+Write Python code to train a Multinomial Naive Bayes classifier on the training data (X_train_tfidf and y_train). Import the model from sklearn.naive_bayes. Fit the model and make predictions on both training and test sets. Calculate and display accuracy scores for both train and test. Also display a classification report for the test set showing precision, recall, and f1-score.
+
+### Prompt #8: Train Logistic Regression Model
+Write Python code to train a Logistic Regression classifier on the training data. Use sklearn.linear_model.LogisticRegression with max_iter=1000. Fit the model and make predictions on test data. Display training accuracy, test accuracy, and a detailed classification report with precision, recall, f1-score for both classes.
+
+### Prompt #9: Train Random Forest Model
+Write Python code to train a Random Forest classifier on the training data using sklearn.ensemble.RandomForestClassifier with n_estimators=100 and random_state=42. Train the model and make predictions. Display training accuracy, test accuracy, and classification report. Note: This may take a few minutes to train.
 
 ---
 
