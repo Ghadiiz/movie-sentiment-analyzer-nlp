@@ -54,4 +54,8 @@ Write Python code to plot ROC curves for all three models on the same graph. Cal
 ---
 
 ## Phase 5: Application Development
-[Prompts will be added as project progresses]
+### Prompt #13: Interactive Sentiment Predictor
+Write Python code to create an interactive sentiment analysis application. Create a function that takes a user's text input, applies the same preprocessing steps (cleaning, tokenization, stopword removal, lemmatization), vectorizes it using the trained TF-IDF vectorizer, and predicts sentiment using the Logistic Regression model. Display the prediction (Positive/Negative) with a confidence score as a percentage. Create a simple text input interface using ipywidgets or allow the user to test with sample reviews. Include at least 3 example reviews to test.
+
+### Prompt #14: Model Summary and Conclusion
+Write Python code to create a comprehensive project summary including: 1) A markdown table comparing all three models with their accuracy, precision, recall, f1-score, and AUC scores, 2) A text conclusion explaining which model performed best and why (Logistic Regression), 3) Limitations of the current approach (e.g., dataset size, binary classification only, no aspect-based sentiment), 4) Future improvements (e.g., using BERT/transformers, multi-class sentiment, real-time data collection). Format this as a nicely displayed output with proper headings.
