@@ -42,7 +42,14 @@ Write Python code to train a Random Forest classifier on the training data using
 ---
 
 ## Phase 4: Model Evaluation
-[Prompts will be added as project progresses]
+### Prompt #10: Confusion Matrices for All Models
+Write Python code to create confusion matrices for all three models (Naive Bayes, Logistic Regression, Random Forest). Display them side by side in a single figure with 3 subplots using seaborn heatmaps. Each heatmap should show the confusion matrix with annotations and a title indicating which model it represents. Use the test set predictions for all models.
+
+### Prompt #11: Model Comparison Chart
+Write Python code to create a comparison visualization showing accuracy, precision, recall, and f1-score for all three models (Naive Bayes, Logistic Regression, Random Forest). Create a grouped bar chart with models on x-axis and metrics on y-axis. Use different colors for each metric and include a legend. Display both training and test accuracy in a separate comparison chart.
+
+### Prompt #12: ROC Curves
+Write Python code to plot ROC curves for all three models on the same graph. Calculate and display the AUC (Area Under Curve) score for each model. Include a diagonal reference line representing random guessing. Add a legend showing each model's AUC score. Use the test set for evaluation.
 
 ---
 
