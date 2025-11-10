@@ -1,4 +1,4 @@
-# movie-sentiment-analyzer-nlp
+# Movie-sentiment-analyzer-nlp
 NLP course project: Movie review sentiment analysis using multiple ML models
 # Movie Sentiment Analyzer - NLP Project
 
