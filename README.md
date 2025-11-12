@@ -42,3 +42,28 @@ This project implements a comprehensive movie review sentiment analysis system u
 - Traditional ML models outperformed LSTM (likely due to dataset characteristics)
 - TF-IDF vectorization proved highly effective for this task
 - Model shows strong generalization with minimal overfitting
+
+
+## Web Application
+
+### Running the Streamlit App Locally
+
+The project includes a **Streamlit web application** for real-time sentiment analysis.
+
+
+The app will automatically open in your browser at `http://localhost:8501`
+
+#### Features:
+- 🎬 Clean, intuitive user interface
+- 📝 Real-time sentiment prediction
+- 📊 Confidence score visualization
+- 💡 Example reviews for quick testing
+- ℹ️ Preprocessing steps explanation
+
+#### How to Use:
+1. Type or paste a movie review in the text box
+2. Click "🔍 Analyze Sentiment"
+3. View the prediction (Positive/Negative) with confidence score
+4. Optionally click example buttons for pre-written reviews
+
+
