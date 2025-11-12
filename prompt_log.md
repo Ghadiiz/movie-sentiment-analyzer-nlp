@@ -66,7 +66,7 @@ Write Python code to create a comprehensive project summary including: 1) A mark
 
 ---
 
-## Phase 6: Deep Learning Model (Professor Feedback - Requirement #1)
+## Phase 6: Deep Learning Model 
 
 ### Prompt #15: Prepare Data for LSTM
 Write Python code to prepare the IMDB dataset for LSTM training. Use the Tokenizer from tensorflow.keras.preprocessing.text to tokenize the processed reviews. Convert texts to sequences, then pad sequences to a maximum length of 200. Create X_train_lstm, X_test_lstm variables from the processed_review column. Display the shape of the padded sequences and show a sample sequence. Also save the tokenizer for later use in predictions.
@@ -79,7 +79,7 @@ Write Python code to evaluate the LSTM model and compare it with the previous th
 
 ---
 
-## Phase 7: Code Refactoring with Unit Tests (Professor Feedback - Requirement #2)
+## Phase 7: Code Refactoring with Unit Tests 
 
 ### Prompt #18: clean_text() Function + Unit Tests
 Write Python code to create a clean_text() function that removes HTML tags using BeautifulSoup, converts text to lowercase, removes special characters keeping only letters and spaces, and removes extra whitespace. Include a docstring. Then create 3 unit tests: Test 1 with HTML tags and special characters, Test 2 with mixed case letters, Test 3 with extra whitespace. Show input, expected output, actual output, and PASSED/FAILED status for each test. Display a summary at the end.
