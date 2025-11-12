@@ -35,15 +35,10 @@ This project implements a comprehensive movie review sentiment analysis system u
 | Naive Bayes | 85.47% | 85.47% | 85.47% | 0.8547 | 0.9313 |
 | **Logistic Regression** | **88.69%** | **88.71%** | **88.69%** | **0.8869** | **0.9551** |
 | Random Forest | 84.51% | 84.51% | 84.51% | 0.8451 | 0.9270 |
-| LSTM | Variable | - | - | - | - |
+| LSTM | 0.5011 | 0.501028 | 0.5360 | 0.517924 | 0.495098 |
 
 ### Key Findings
 - **Logistic Regression** achieved the best overall performance
 - Traditional ML models outperformed LSTM (likely due to dataset characteristics)
 - TF-IDF vectorization proved highly effective for this task
 - Model shows strong generalization with minimal overfitting
-
-
-
-### Option 2: Local Environment
-
