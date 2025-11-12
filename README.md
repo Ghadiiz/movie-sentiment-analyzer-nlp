@@ -1,34 +1,49 @@
-# Movie-sentiment-analyzer-nlp
-NLP course project: Movie review sentiment analysis using multiple ML models
 # Movie Sentiment Analyzer - NLP Project
 
 ## Overview
-This project implements a movie review sentiment analysis system using machine learning. It classifies IMDB movie reviews as positive or negative using three different models.
+This project implements a comprehensive movie review sentiment analysis system using both traditional machine learning and deep learning approaches. It classifies IMDB movie reviews as positive or negative, demonstrating the full data science pipeline from data preprocessing to model deployment.
 
 ## Features
-- **Dataset:** 50,000 IMDB movie reviews
-- **Preprocessing:** Text cleaning, tokenization, stopword removal, lemmatization, TF-IDF vectorization
-- **Models:** Naive Bayes, Logistic Regression, Random Forest
-- **Best Model:** Logistic Regression (88.69% accuracy, 0.9551 AUC)
-- **Interactive Application:** Real-time sentiment prediction with confidence scores
+- **Dataset:** 50,000 IMDB movie reviews (balanced)
+- **Preprocessing:** Complete NLP pipeline with modular functions and unit tests
+- **Models:** 4 different classifiers implemented and compared
+  - Multinomial Naive Bayes (85.47% accuracy)
+  - Logistic Regression (88.69% accuracy) ⭐ **Best Model**
+  - Random Forest (84.51% accuracy)
+  - LSTM Deep Learning (Deep learning approach)
+- **Evaluation:** Comprehensive benchmarking with confusion matrices, ROC curves, and performance metrics
+- **Testing:** Unit tests for each preprocessing function
+- **Application:** Interactive sentiment prediction with confidence scores
 
-## Project Structure
-- `Movie_Sentiment_Analysis.ipynb` - Main notebook with all code
-- `prompt_log.md` - Complete log of AI prompts used
-- `requirements.txt` - Python dependencies
+
+## Technologies Used
+- **Python 3.x**
+- **Libraries:**
+  - Data Processing: pandas, numpy
+  - NLP: nltk, scikit-learn (TF-IDF)
+  - Machine Learning: scikit-learn (Naive Bayes, Logistic Regression, Random Forest)
+  - Deep Learning: TensorFlow/Keras (LSTM)
+  - Visualization: matplotlib, seaborn
+  - Web Scraping: BeautifulSoup (HTML cleaning)
+  - Interactive UI: ipywidgets
 
 ## Results
-- Comprehensive model comparison with visualizations
-- Confusion matrices, ROC curves, and performance metrics
-- Interactive demo application
 
-## How to Run
-1. Open the notebook in Google Colab
-2. Run all cells sequentially
-3. Use the interactive sentiment analyzer at the end
+### Model Performance Comparison
+| Model | Accuracy | Precision | Recall | F1-Score | AUC |
+|-------|----------|-----------|--------|----------|-----|
+| Naive Bayes | 85.47% | 85.47% | 85.47% | 0.8547 | 0.9313 |
+| **Logistic Regression** | **88.69%** | **88.71%** | **88.69%** | **0.8869** | **0.9551** |
+| Random Forest | 84.51% | 84.51% | 84.51% | 0.8451 | 0.9270 |
+| LSTM | Variable | - | - | - | - |
 
-## Author
-Created for Natural Language Processing course
+### Key Findings
+- **Logistic Regression** achieved the best overall performance
+- Traditional ML models outperformed LSTM (likely due to dataset characteristics)
+- TF-IDF vectorization proved highly effective for this task
+- Model shows strong generalization with minimal overfitting
 
-## Date
-November 2025
+
+
+### Option 2: Local Environment
+
