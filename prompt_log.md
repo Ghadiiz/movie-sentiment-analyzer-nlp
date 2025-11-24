@@ -6,104 +6,110 @@ This document contains all prompts used with the integrated AI in Google Colab.
 
 ## Phase 1: Setup & Data Loading
 
-### Prompt #1: Import Libraries
-Create a Python function that imports all necessary libraries for NLP sentiment analysis including pandas, numpy, matplotlib, seaborn, nltk, sklearn, and tensorflow/keras. Also include functions to download NLTK data packages (stopwords, punkt, wordnet).
+### Prompt #1: Import Libraries and Setup Environment
+Create a Python function that imports all necessary libraries for NLP sentiment analysis including pandas, numpy, matplotlib, seaborn, nltk, sklearn, and tensorflow/keras. Also include functions to download NLTK data packages (stopwords, punkt, wordnet, omw-1.4). Display confirmation messages for each download. Set up the environment for reproducibility with random seeds.
 
-### Prompt #2: Load Dataset
-Write Python code to load the IMDB movie review dataset from keras.datasets. Convert the integer sequences back to text using the word index. Create a pandas dataframe with columns 'review' (the actual text) and 'sentiment' (1 for positive, 0 for negative). Display the first 5 rows, dataframe shape, and data types. Include all necessary code without instructions or comments explaining alternatives.
+### Prompt #2: Load IMDB Dataset
+Write Python code to load the IMDB movie review dataset from keras.datasets. Convert the integer sequences back to text using the word index, handling the offset correctly. Create a pandas dataframe with columns 'review' (the actual text) and 'sentiment' (1 for positive, 0 for negative). Display the first 5 rows, dataframe shape, data types, and basic statistics about the dataset size.
 
-### Prompt #3: Data Exploration
-Write Python code to perform exploratory data analysis on a dataframe called 'imdb_df' with columns 'review' and 'sentiment'. Create: 1) A bar chart showing count of positive (sentiment=1) vs negative (sentiment=0) reviews, 2) A histogram showing distribution of review lengths in words, 3) Check for missing values, 4) Display 5 random sample reviews with their sentiments. Use matplotlib and seaborn for visualizations.
-
----
-
-## Phase 2: Text Preprocessing
-
-### Prompt #4: Text Cleaning
-Write a Python function called clean_text that takes a text string and performs these preprocessing steps: 1) Convert to lowercase, 2) Remove HTML tags using BeautifulSoup or regex, 3) Remove special characters and punctuation keeping only letters and spaces, 4) Remove extra whitespaces. Apply this function to all reviews in the imdb_df dataframe and create a new column called 'cleaned_review'. Display before and after examples of 3 reviews.
-
-### Prompt #5: Tokenization and Stopword Removal
-Write Python code to tokenize the cleaned reviews using NLTK. Remove stopwords using NLTK's English stopwords list. Apply lemmatization using WordNetLemmatizer. Create a new column in imdb_df called 'processed_review' containing the processed text. Show the difference between cleaned_review and processed_review for 3 examples. Also display the 20 most common words after processing using a bar chart.
-
-### Prompt #6: Train-Test Split and Vectorization
-Write Python code to split the imdb_df dataset into training (80%) and testing (20%) sets with stratification on sentiment. Use TfidfVectorizer from sklearn with max_features=5000 to convert text to numerical features. Fit the vectorizer on training data only and transform both train and test sets. Display the shapes of X_train, X_test, y_train, y_test and the vocabulary size. Also show a sample of the TF-IDF matrix.
+### Prompt #3: Exploratory Data Analysis
+Write Python code to perform comprehensive exploratory data analysis on the imdb_df dataframe. Create: 1) A bar chart showing distribution of positive vs negative reviews with exact counts, 2) A histogram showing distribution of review lengths in words with statistics, 3) Check for missing values and duplicates, 4) Display 3 random sample reviews with their sentiments showing both short and long reviews. Use matplotlib and seaborn for professional visualizations with proper titles and labels.
 
 ---
 
-## Phase 3: Model Training
+## Phase 2: Text Preprocessing with Unit Tests
 
-### Prompt #7: Train Naive Bayes Model
-Write Python code to train a Multinomial Naive Bayes classifier on the training data (X_train_tfidf and y_train). Import the model from sklearn.naive_bayes. Fit the model and make predictions on both training and test sets. Calculate and display accuracy scores for both train and test. Also display a classification report for the test set showing precision, recall, and f1-score.
+### Prompt #4: clean_text() Function with Unit Tests
+Write Python code to create a clean_text() function that: 1) Replaces <br> tags with spaces before general HTML removal, 2) Removes all HTML tags using BeautifulSoup, 3) Converts to lowercase, 4) Removes special characters keeping only letters and spaces, 5) Removes extra whitespace. Include a detailed docstring. Create 3 unit tests: Test 1 for HTML tags and special characters, Test 2 for mixed case letters, Test 3 specifically for <br> and <br/> tags with extra whitespace. Display input, expected output, actual output, and PASSED/FAILED status for each test with a summary.
 
-### Prompt #8: Train Logistic Regression Model
-Write Python code to train a Logistic Regression classifier on the training data. Use sklearn.linear_model.LogisticRegression with max_iter=1000. Fit the model and make predictions on test data. Display training accuracy, test accuracy, and a detailed classification report with precision, recall, f1-score for both classes.
+### Prompt #5: remove_stopwords() Function with Unit Tests
+Write Python code to create a remove_stopwords() function that removes English stopwords using NLTK. Add 'br' as a custom stopword to handle IMDB dataset artifacts. Include a docstring explaining the custom stopword. Create 3 unit tests: Test 1 with common stopwords, Test 2 with mixed content words and stopwords, Test 3 specifically testing the 'br' artifact removal. Display input, expected output, actual output, and PASSED/FAILED status for each test with a summary.
 
-### Prompt #9: Train Random Forest Model
-Write Python code to train a Random Forest classifier on the training data using sklearn.ensemble.RandomForestClassifier with n_estimators=100 and random_state=42. Train the model and make predictions. Display training accuracy, test accuracy, and classification report. Note: This may take a few minutes to train.
+### Prompt #6: lemmatize_text() Function with Unit Tests
+Write Python code to create a lemmatize_text() function that applies WordNet lemmatization using NLTK. Include a docstring. Create 3 unit tests: Test 1 with verbs in different tenses, Test 2 with plural nouns, Test 3 with adjectives and adverbs. Show input, expected output, actual output, and PASSED/FAILED status for each test. Display a summary showing how many tests passed.
 
----
+### Prompt #7: preprocess_pipeline() with Integration Test
+Write Python code to create a preprocess_pipeline() function that combines all three preprocessing steps in order: clean_text, remove_stopwords, then lemmatize_text. Include a comprehensive docstring. Create an integration test using a full movie review example with HTML tags, <br> tags, special characters, stopwords, and various word forms. Show step-by-step transformation after each function (Step 1: after clean_text, Step 2: after remove_stopwords, Step 3: after lemmatize_text). Verify the complete pipeline produces the same final output and display PASSED/FAILED verification.
 
-## Phase 4: Model Evaluation
+### Prompt #8: Apply Preprocessing to Dataset
+Write Python code to apply the preprocess_pipeline() function to all reviews in the imdb_df dataframe. Create a new column called 'processed_review'. Display progress messages, total reviews processed, and show before/after examples for 3 random reviews. For each example, show the original review (first 100 chars), the processed review (first 100 chars), and confirm the transformation worked correctly.
 
-### Prompt #10: Confusion Matrices for All Models
-Write Python code to create confusion matrices for all three models (Naive Bayes, Logistic Regression, Random Forest). Display them side by side in a single figure with 3 subplots using seaborn heatmaps. Each heatmap should show the confusion matrix with annotations and a title indicating which model it represents. Use the test set predictions for all models.
-
-### Prompt #11: Model Comparison Chart
-Write Python code to create a comparison visualization showing accuracy, precision, recall, and f1-score for all three models (Naive Bayes, Logistic Regression, Random Forest). Create a grouped bar chart with models on x-axis and metrics on y-axis. Use different colors for each metric and include a legend. Display both training and test accuracy in a separate comparison chart.
-
-### Prompt #12: ROC Curves
-Write Python code to plot ROC curves for all three models on the same graph. Calculate and display the AUC (Area Under Curve) score for each model. Include a diagonal reference line representing random guessing. Add a legend showing each model's AUC score. Use the test set for evaluation.
+### Prompt #9: Word Frequency Visualization
+Write Python code to visualize the top 20 most common words after preprocessing. Use Counter from collections to get word frequencies from all processed reviews. Create a bar chart with proper titles, labels, and formatting. This visualization should verify that no HTML artifacts (like 'br') appear in the most common words, confirming successful preprocessing.
 
 ---
 
-## Phase 5: Application Development
+## Phase 3: Data Splitting and Feature Engineering
 
-### Prompt #13: Interactive Sentiment Predictor
-Write Python code to create an interactive sentiment analysis application. Create a function that takes a user's text input, applies the same preprocessing steps (cleaning, tokenization, stopword removal, lemmatization), vectorizes it using the trained TF-IDF vectorizer, and predicts sentiment using the Logistic Regression model. Display the prediction (Positive/Negative) with a confidence score as a percentage. Create a simple text input interface using ipywidgets or allow the user to test with sample reviews. Include at least 3 example reviews to test.
-
-### Prompt #14: Model Summary and Conclusion
-Write Python code to create a comprehensive project summary including: 1) A markdown table comparing all three models with their accuracy, precision, recall, f1-score, and AUC scores, 2) A text conclusion explaining which model performed best and why (Logistic Regression), 3) Limitations of the current approach (e.g., dataset size, binary classification only, no aspect-based sentiment), 4) Future improvements (e.g., using BERT/transformers, multi-class sentiment, real-time data collection). Format this as a nicely displayed output with proper headings.
+### Prompt #10: Train/Validation/Test Split with TF-IDF
+Write Python code to split the dataset into training (70%), validation (15%), and test (15%) sets with stratification on sentiment. Use train_test_split twice: first to separate test set, then to split remaining data into train and validation. Display the exact number and percentage of samples in each set. Then apply TfidfVectorizer with max_features=5000, fitting only on training data to prevent data leakage. Transform all three sets. Display shapes of X_train_tfidf, X_val_tfidf, X_test_tfidf and corresponding y sets. Show vocabulary size and a sample of the TF-IDF matrix.
 
 ---
 
-## Phase 6: Deep Learning Model 
+## Phase 4: Model Training with Validation
 
-### Prompt #15: Prepare Data for LSTM
-Write Python code to prepare the IMDB dataset for LSTM training. Use the Tokenizer from tensorflow.keras.preprocessing.text to tokenize the processed reviews. Convert texts to sequences, then pad sequences to a maximum length of 200. Create X_train_lstm, X_test_lstm variables from the processed_review column. Display the shape of the padded sequences and show a sample sequence. Also save the tokenizer for later use in predictions.
+### Prompt #11: Train Naive Bayes with Validation Evaluation
+Write Python code to train a Multinomial Naive Bayes classifier. Fit on training data and make predictions on all three sets (train, validation, test). Calculate and display accuracy for each set with percentages. Display classification reports for both validation and test sets with target names ['Negative', 'Positive']. Use professional formatting with clear section headers showing this is Model 1.
 
-### Prompt #16: Build and Train LSTM Model
-Write Python code to build and train an LSTM model for sentiment classification using Keras. Create a Sequential model with: 1) Embedding layer with 5000 vocabulary size and 128 dimensions, 2) LSTM layer with 128 units and dropout 0.2, 3) Dense layer with sigmoid activation for binary classification. Compile with adam optimizer and binary_crossentropy loss. Train for 5 epochs with batch_size=64 and validation_split=0.2. Display training history with accuracy and loss plots. Then evaluate on test set and display test accuracy.
+### Prompt #12: Train Logistic Regression with Validation Evaluation
+Write Python code to train a Logistic Regression classifier with max_iter=1000 and random_state=42. Fit on training data and make predictions on train, validation, and test sets. Calculate and display accuracy for all three sets with percentages. Display classification reports for validation and test sets. Use professional formatting with clear headers showing this is Model 2.
 
-### Prompt #17: Evaluate LSTM with Other Models
-Write Python code to evaluate the LSTM model and compare it with the previous three models (Naive Bayes, Logistic Regression, Random Forest). Generate predictions, calculate accuracy, precision, recall, f1-score. Create a confusion matrix for LSTM. Then create an updated comparison table showing all 4 models with their performance metrics. Also update the ROC curve plot to include LSTM as the 4th curve.
+### Prompt #13: Train Random Forest with Validation Evaluation
+Write Python code to train a Random Forest classifier with n_estimators=100, random_state=42, and n_jobs=-1 for parallel processing. Include a message that training may take a few minutes. Fit on training data and make predictions on all three sets. Calculate and display accuracy for train, validation, and test with percentages. Display classification reports for validation and test sets. Use professional formatting showing this is Model 3.
 
 ---
 
-## Phase 7: Code Refactoring with Unit Tests 
+## Phase 5: Deep Learning Model
 
-### Prompt #18: clean_text() Function + Unit Tests
-Write Python code to create a clean_text() function that removes HTML tags using BeautifulSoup, converts text to lowercase, removes special characters keeping only letters and spaces, and removes extra whitespace. Include a docstring. Then create 3 unit tests: Test 1 with HTML tags and special characters, Test 2 with mixed case letters, Test 3 with extra whitespace. Show input, expected output, actual output, and PASSED/FAILED status for each test. Display a summary at the end.
+### Prompt #14: Prepare Data for LSTM with Proper Split
+Write Python code to prepare data for LSTM training using the existing train/validation/test split. Initialize a Tokenizer with num_words=5000 and maxlen=200. Fit the tokenizer only on X_train to prevent data leakage. Convert all three sets (X_train, X_val, X_test) to sequences and pad them. Convert labels to numpy arrays. Display shapes of X_train_lstm, X_val_lstm, X_test_lstm. Show vocabulary size and a sample padded sequence. Confirm data preparation is complete with no data leakage.
 
-### Prompt #19: remove_stopwords() Function + Unit Tests
-Write Python code to create a remove_stopwords() function that removes English stopwords from text using NLTK. Include a docstring. Then create 3 unit tests: Test 1 with common stopwords like 'the', 'is', 'a', Test 2 with only content words (no stopwords), Test 3 with an empty string. Show input, expected output, actual output, and PASSED/FAILED status for each test. Display a summary.
+### Prompt #15: Build and Train LSTM Model
+Write Python code to build an LSTM model using Keras Sequential API with: 1) Embedding layer (input_dim=5000, output_dim=128, input_length=200), 2) LSTM layer (128 units, dropout=0.2, recurrent_dropout=0.2), 3) Dense layer with sigmoid activation. Compile with adam optimizer and binary_crossentropy loss. Display model summary. Train for 5 epochs with batch_size=64 using validation_data=(X_val_lstm, y_val_lstm) NOT validation_split. Display training progress. Create two plots side-by-side: training vs validation accuracy, and training vs validation loss over epochs. Evaluate on all three sets and display train, validation, and test accuracy with percentages. Use professional formatting showing this is Model 4.
 
-### Prompt #20: lemmatize_text() Function + Unit Tests
-Write Python code to create a lemmatize_text() function that applies WordNet lemmatization to convert words to their base form. Include a docstring. Then create 3 unit tests with different word forms: Test 1 with verbs and adjectives, Test 2 with plural nouns, Test 3 with various word forms. Show input, actual output (lemmatization varies), and execution status. Display a summary.
+---
 
-### Prompt #21: preprocess_pipeline() + Integration Test
-Write Python code to create a preprocess_pipeline() function that combines all preprocessing steps: clean_text, remove_stopwords, and lemmatize_text. Include a docstring. Then create an integration test with a full movie review example containing HTML tags, special characters, stopwords, and various word forms. Show the original text, step-by-step transformation after each function, and final output. Verify that the pipeline function produces the same result.
+## Phase 6: Comprehensive Model Comparison
+
+### Prompt #16: Complete Model Comparison with Validation and Test
+Write Python code to create a comprehensive comparison of all 4 models. First, calculate LSTM predictions and metrics (accuracy, precision, recall, f1-score) for both validation and test sets. Create two comparison tables: Table 1 showing validation performance for all 4 models, Table 2 showing test performance. Identify the best model based on validation accuracy. Create side-by-side bar charts comparing validation and test accuracy for all models with exact values displayed. Show confusion matrix for LSTM on test set using seaborn heatmap. Include a final summary explaining the selected model, its validation accuracy, test accuracy, and methodology used for selection.
+
+---
+
+## Phase 7: Application Development
+
+### Prompt #17: Interactive Sentiment Analyzer
+Write Python code to create a sentiment analysis function called predict_sentiment() that takes raw text input, applies the preprocess_pipeline(), vectorizes using the fitted tfidf_vectorizer, and predicts using the best model (Logistic Regression). Return sentiment label and confidence percentage. Include error handling for empty input. Create 5 diverse example reviews (very positive, very negative, mixed, different styles) and test the function on each. Display results in a formatted way showing the review text, predicted sentiment, and confidence percentage. Provide instructions for using the function with custom text.
+
+### Prompt #18: Project Conclusion and Analysis
+Write Python code to create a comprehensive project conclusion including: 1) Project overview listing all 4 models, 2) Methodology section explaining the 70/15/15 split, preprocessing pipeline with unit tests, and feature engineering approaches, 3) Performance summary table showing validation and test accuracy for all models, 4) Model selection explanation based on validation accuracy with justification, 5) Detailed explanation of how the selected model works from input to output, 6) Five specific limitations (domain specificity, binary classification, context understanding, language limitation, aspect-level analysis), 7) Seven future improvements (advanced embeddings, multi-class sentiment, aspect-based analysis, cross-domain transfer, hyperparameter optimization, explainable AI, production deployment). Format with clear headers, proper spacing, and professional presentation. End with a project complete message and summary statement.
 
 ---
 
 ## Summary
 
-**Total Prompts Used:** 21
+**Total Prompts Used:** 18
 
 **Project Phases:**
-- Phase 1-5: Original project implementation (Prompts 1-14)
-- Phase 6: LSTM deep learning model addition (Prompts 15-17)
-- Phase 7: Code refactoring with comprehensive unit testing (Prompts 18-21)
+- Phase 1: Setup & Data Loading (Prompts 1-3)
+- Phase 2: Preprocessing with Unit Tests (Prompts 4-9)
+- Phase 3: Data Splitting & Feature Engineering (Prompt 10)
+- Phase 4: Classical ML Models with Validation (Prompts 11-13)
+- Phase 5: Deep Learning Model (Prompts 14-15)
+- Phase 6: Comprehensive Evaluation (Prompt 16)
+- Phase 7: Application Development (Prompts 17-18)
 
 **Models Implemented:** 4 (Naive Bayes, Logistic Regression, Random Forest, LSTM)
 
-**Best Model:** Logistic Regression (88.69% accuracy, 0.9551 AUC)
+**Dataset Split:** 70% Train / 15% Validation / 15% Test
+
+**Best Model:** Logistic Regression (selected based on validation accuracy)
+
+**Key Features:**
+- Comprehensive unit tests for all preprocessing functions
+- Integration test for complete pipeline
+- Proper train/validation/test split to prevent data leakage
+- Validation-based model selection following ML best practices
+- 'br' artifact handling specific to IMDB dataset
+- Professional formatting and documentation throughout
+
