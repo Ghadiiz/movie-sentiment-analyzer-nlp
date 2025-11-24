@@ -3,8 +3,9 @@ import pickle
 import re
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from sklearn.feature_extraction.text import TfidfVectorizer
+from bs4 import BeautifulSoup
 import nltk
+import os
 
 # Download NLTK data (first time only)
 try:
@@ -13,63 +14,119 @@ except:
     nltk.download('stopwords')
     nltk.download('wordnet')
     nltk.download('omw-1.4')
+    nltk.download('punkt')
 
 # Initialize preprocessing tools
 lemmatizer = WordNetLemmatizer()
 stop_words = set(stopwords.words('english'))
+stop_words.add('br')  # Add IMDB artifact
 
-# Preprocessing functions
+# ============================================================================
+# PREPROCESSING FUNCTIONS (Same as notebook)
+# ============================================================================
+
 def clean_text(text):
-    """Clean text: lowercase, remove special chars"""
+    """
+    Clean text by removing HTML tags, converting to lowercase,
+    removing special characters, and removing extra whitespace.
+    """
+    # Replace <br> tags with spaces BEFORE using BeautifulSoup
+    text = re.sub(r'<br\s*/?>', ' ', text, flags=re.IGNORECASE)
+    
+    # Remove all other HTML tags using BeautifulSoup
+    text = BeautifulSoup(text, 'html.parser').get_text()
+    
+    # Convert to lowercase
     text = text.lower()
+    
+    # Remove special characters, keep only letters and spaces
     text = re.sub(r'[^a-z\s]', '', text)
+    
+    # Remove extra whitespace
     text = ' '.join(text.split())
+    
     return text
 
 def remove_stopwords(text):
-    """Remove English stopwords"""
+    """
+    Remove stopwords from text.
+    """
     words = text.split()
     filtered_words = [word for word in words if word not in stop_words]
     return ' '.join(filtered_words)
 
 def lemmatize_text(text):
-    """Lemmatize words to base form"""
+    """
+    Lemmatize words to their base form.
+    """
     words = text.split()
     lemmatized_words = [lemmatizer.lemmatize(word) for word in words]
     return ' '.join(lemmatized_words)
 
-def preprocess_text(text):
-    """Complete preprocessing pipeline"""
+def preprocess_pipeline(text):
+    """
+    Complete preprocessing pipeline combining all steps.
+    """
     text = clean_text(text)
     text = remove_stopwords(text)
     text = lemmatize_text(text)
     return text
 
-# Note: You'll need to save your trained model and vectorizer from Colab
-# For demo purposes, we'll use placeholder predictions
-def predict_sentiment(text):
-    """Predict sentiment (simplified for demo)"""
-    # Preprocess the text
-    processed_text = preprocess_text(text)
-    
-    # Simple heuristic for demo (replace with actual model loading)
-    positive_words = ['good', 'great', 'excellent', 'amazing', 'fantastic', 'love', 'wonderful', 'best', 'perfect', 'brilliant']
-    negative_words = ['bad', 'terrible', 'awful', 'horrible', 'worst', 'hate', 'poor', 'waste', 'boring', 'disappointing']
-    
-    words = processed_text.split()
-    pos_count = sum(1 for word in words if word in positive_words)
-    neg_count = sum(1 for word in words if word in negative_words)
-    
-    if pos_count > neg_count:
-        confidence = min(55 + pos_count * 8, 95)
-        return "Positive 😊", confidence
-    elif neg_count > pos_count:
-        confidence = min(55 + neg_count * 8, 95)
-        return "Negative 😞", confidence
-    else:
-        return "Neutral 😐", 50.0
+# ============================================================================
+# LOAD TRAINED MODELS
+# ============================================================================
 
-# Streamlit App
+@st.cache_resource
+def load_models():
+    """Load trained models and vectorizer"""
+    try:
+        # Load Logistic Regression model
+        with open('logistic_regression_model.pkl', 'rb') as f:
+            model = pickle.load(f)
+        
+        # Load TF-IDF vectorizer
+        with open('tfidf_vectorizer.pkl', 'rb') as f:
+            vectorizer = pickle.load(f)
+        
+        return model, vectorizer, True
+    except FileNotFoundError:
+        st.error("⚠️ Model files not found! Please export models from Colab first.")
+        return None, None, False
+
+# Load models
+lr_model, tfidf_vec, models_loaded = load_models()
+
+# ============================================================================
+# PREDICTION FUNCTION
+# ============================================================================
+
+def predict_sentiment(text):
+    """
+    Predict sentiment using the trained Logistic Regression model.
+    """
+    if not models_loaded:
+        return "Error: Models not loaded", 0.0
+    
+    # Preprocess the text
+    processed_text = preprocess_pipeline(text)
+    
+    # Vectorize using TF-IDF
+    text_tfidf = tfidf_vec.transform([processed_text])
+    
+    # Predict using Logistic Regression
+    prediction = lr_model.predict(text_tfidf)[0]
+    prediction_proba = lr_model.predict_proba(text_tfidf)[0]
+    
+    # Get sentiment label and confidence
+    sentiment_label = "Positive 😊" if prediction == 1 else "Negative 😞"
+    confidence = prediction_proba[prediction] * 100
+    
+    return sentiment_label, confidence, processed_text
+
+# ============================================================================
+# STREAMLIT APP UI
+# ============================================================================
+
 st.set_page_config(
     page_title="Movie Sentiment Analyzer",
     page_icon="🎬",
@@ -78,122 +135,178 @@ st.set_page_config(
 
 # Header
 st.title("🎬 Movie Review Sentiment Analyzer")
-st.markdown("### Analyze the sentiment of movie reviews using NLP")
+st.markdown("### AI-Powered NLP Sentiment Analysis")
 st.markdown("---")
 
 # Sidebar
 with st.sidebar:
-    st.header("About")
+    st.header("📊 Project Information")
     st.info(
         """
         This application uses **Natural Language Processing** 
-        and **Machine Learning** to classify movie reviews as 
-        positive or negative.
+        and **Machine Learning** to classify movie reviews.
         
-        **Models Used:**
-        - Naive Bayes
-        - Logistic Regression ⭐
-        - Random Forest
-        - LSTM
+        **Dataset:** 50,000 IMDB Reviews
         
-        **Best Model:** Logistic Regression (88.69% accuracy)
+        **Data Split:**
+        - Training: 70% (35,000)
+        - Validation: 15% (7,480)
+        - Test: 15% (7,500)
+        
+        **Models Trained:**
+        1. Naive Bayes - 85.23%
+        2. **Logistic Regression - 88.59%** ⭐
+        3. Random Forest - 84.29%
+        4. LSTM - 87.09%
+        
+        **Selected Model:** Logistic Regression
+        - Validation Acc: 88.74%
+        - Test Acc: 88.59%
+        - Best balance of accuracy and efficiency
         """
     )
     
-    st.header("Example Reviews")
-    example1 = "This movie was absolutely fantastic! I loved every moment of it."
-    example2 = "Terrible film. Complete waste of time and money."
-    example3 = "It was an okay movie, nothing special but watchable."
+    st.header("🔧 Preprocessing Steps")
+    st.markdown("""
+    1. **HTML Tag Removal**
+    2. **Lowercase Conversion**
+    3. **Special Character Removal**
+    4. **Stopword Removal**
+    5. **Lemmatization**
+    6. **TF-IDF Vectorization**
+    """)
+    
+    st.markdown("---")
+    st.markdown("Built for NLP Course Project")
+    st.markdown("November 2025")
+
+# Check if models are loaded
+if not models_loaded:
+    st.error("⚠️ **Models not found!**")
+    st.markdown("""
+    ### How to fix:
+    1. Run the export cell at the end of your Colab notebook
+    2. Download these files:
+       - `logistic_regression_model.pkl`
+       - `tfidf_vectorizer.pkl`
+    3. Place them in the same directory as `app.py`
+    4. Restart the Streamlit app
+    """)
+    st.stop()
 
 # Main area
-col1, col2 = st.columns([3, 1])
-
-with col1:
-    st.subheader("Enter Your Movie Review")
+st.subheader("📝 Enter Your Movie Review")
 
 # Text input
 user_input = st.text_area(
     "Type or paste your review here:",
     height=150,
-    placeholder="e.g., This movie was amazing! The acting was superb and the plot kept me engaged throughout..."
+    placeholder="e.g., This movie was absolutely fantastic! The acting was superb and the plot kept me engaged throughout..."
 )
 
 # Buttons row
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns([4, 1])
 
 with col1:
-    if st.button("🔍 Analyze Sentiment", type="primary", use_container_width=True):
-        if user_input.strip():
-            with st.spinner("Analyzing..."):
-                sentiment, confidence = predict_sentiment(user_input)
-                
-                # Display results
-                st.markdown("---")
-                st.subheader("Analysis Results")
-                
-                # Sentiment with emoji
+    analyze_button = st.button("🔍 Analyze Sentiment", type="primary", use_container_width=True)
+
+with col2:
+    clear_button = st.button("🗑️ Clear", use_container_width=True)
+
+# Clear functionality
+if clear_button:
+    st.rerun()
+
+# Analysis
+if analyze_button:
+    if user_input.strip():
+        with st.spinner("🤖 Analyzing sentiment..."):
+            sentiment, confidence, processed = predict_sentiment(user_input)
+            
+            # Display results
+            st.markdown("---")
+            st.subheader("📊 Analysis Results")
+            
+            # Sentiment display
+            col1, col2 = st.columns(2)
+            
+            with col1:
                 if "Positive" in sentiment:
-                    st.success(f"**Sentiment:** {sentiment}")
-                    color = "green"
-                elif "Negative" in sentiment:
-                    st.error(f"**Sentiment:** {sentiment}")
-                    color = "red"
+                    st.success(f"### {sentiment}")
                 else:
-                    st.warning(f"**Sentiment:** {sentiment}")
-                    color = "orange"
+                    st.error(f"### {sentiment}")
+            
+            with col2:
+                st.metric("Confidence", f"{confidence:.2f}%")
+            
+            # Progress bar
+            st.progress(int(confidence)/100)
+            
+            # Confidence interpretation
+            if confidence >= 90:
+                st.info("🎯 **Very High Confidence** - The model is very certain about this prediction.")
+            elif confidence >= 75:
+                st.info("✅ **High Confidence** - The model is confident about this prediction.")
+            elif confidence >= 60:
+                st.warning("⚠️ **Moderate Confidence** - The model has some uncertainty.")
+            else:
+                st.warning("❓ **Low Confidence** - The review may have mixed sentiment.")
+            
+            # Preprocessing details
+            with st.expander("🔍 View Preprocessing Steps"):
+                st.write("**Step 1: Original Text**")
+                st.code(user_input, language=None)
                 
-                # Confidence score
-                st.metric("Confidence Score", f"{confidence:.1f}%")
-                st.progress(int(confidence)/100)
+                st.write("**Step 2: After HTML Cleaning & Lowercase**")
+                step1 = clean_text(user_input)
+                st.code(step1, language=None)
                 
-                # Preprocessing info
-                with st.expander("📝 View Preprocessing Steps"):
-                    st.write("**Original Text:**")
-                    st.code(user_input)
-                    st.write("**Cleaned Text:**")
-                    cleaned = clean_text(user_input)
-                    st.code(cleaned)
-                    st.write("**After Stopword Removal:**")
-                    no_stopwords = remove_stopwords(cleaned)
-                    st.code(no_stopwords)
-                    st.write("**After Lemmatization:**")
-                    final = lemmatize_text(no_stopwords)
-                    st.code(final)
-        else:
-            st.warning("⚠️ Please enter a review to analyze!")
+                st.write("**Step 3: After Stopword Removal**")
+                step2 = remove_stopwords(step1)
+                st.code(step2, language=None)
+                
+                st.write("**Step 4: Final (After Lemmatization)**")
+                st.code(processed, language=None)
+                
+                st.info(f"📉 Word count reduced: {len(user_input.split())} → {len(processed.split())} words")
+    else:
+        st.warning("⚠️ Please enter a review to analyze!")
 
-with col2:
-    if st.button("🗑️ Clear", use_container_width=True):
-        st.rerun()
-
-# Example buttons
+# Example reviews
 st.markdown("---")
-st.subheader("Try Example Reviews")
-col1, col2, col3 = st.columns(3)
+st.subheader("💡 Try Example Reviews")
 
-with col1:
-    if st.button("😊 Positive Example"):
-        st.session_state.example = example1
+example_reviews = {
+    "😊 Positive": "This movie was absolutely fantastic! The acting was superb, the cinematography was breathtaking, and the plot kept me engaged from start to finish. Definitely one of the best films I've seen this year!",
+    "😞 Negative": "This was honestly one of the worst movies I've ever seen. The plot was confusing, the acting was terrible, and it felt like a complete waste of time and money. Would not recommend to anyone.",
+    "😐 Mixed": "The movie had its moments. Some scenes were really well done and the main actor gave a solid performance, but overall the pacing was slow and the ending felt rushed. It's an okay watch if you have time.",
+    "🎭 Another Positive": "Brilliant masterpiece! Outstanding performances from the entire cast. The director did an amazing job bringing this story to life.",
+    "👎 Another Negative": "Boring and predictable. Poor writing, weak characters, and terrible dialogue. Save your money and skip this one."
+}
 
-with col2:
-    if st.button("😞 Negative Example"):
-        st.session_state.example = example2
+# Create columns for example buttons
+cols = st.columns(3)
 
-with col3:
-    if st.button("😐 Neutral Example"):
-        st.session_state.example = example3
+for idx, (label, review) in enumerate(example_reviews.items()):
+    with cols[idx % 3]:
+        if st.button(label, use_container_width=True, key=f"example_{idx}"):
+            st.session_state.selected_example = review
 
-# Display example if clicked
-if 'example' in st.session_state:
-    st.text_area("Selected Example:", value=st.session_state.example, height=100, key="example_display")
+# Display selected example
+if 'selected_example' in st.session_state:
+    st.text_area("📋 Selected Example (Copy and analyze):", 
+                 value=st.session_state.selected_example, 
+                 height=120, 
+                 key="example_display")
 
 # Footer
 st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: gray;'>
-    <p>Built for NLP Course Project | November 2025</p>
-    <p>Dataset: 50,000 IMDB Movie Reviews</p>
+    <p><strong>Movie Sentiment Analyzer</strong> | NLP Course Project 2025</p>
+    <p>Trained on 50,000 IMDB Movie Reviews | Best Model: Logistic Regression (88.59% Accuracy)</p>
+    <p>Powered by scikit-learn, NLTK, and Streamlit</p>
     </div>
     """,
     unsafe_allow_html=True
