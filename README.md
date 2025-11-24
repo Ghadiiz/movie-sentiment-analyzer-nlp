@@ -131,7 +131,7 @@ The notebook includes 5 diverse example reviews demonstrating:
 
 ---
 
-```
+
 ## Installation & Setup
 
 ### Prerequisites
