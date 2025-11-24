@@ -128,6 +128,104 @@ The notebook includes 5 diverse example reviews demonstrating:
 - Mixed sentiment reviews (lower confidence)
 - Different writing styles and lengths
 
+
+---
+
+```
+## Installation & Setup
+
+### Prerequisites
+
+- Python 3.8 or higher
+- Git (for cloning the repository)
+- pip (Python package manager)
+
+### Clone the Repository
+
+```bash
+# Clone the repository
+git clone https://github.com/Ghadiiz/movie-sentiment-analyzer-nlp.git
+
+# Navigate to the project directory
+cd movie-sentiment-analyzer-nlp
+```
+
+### Install Dependencies
+
+```bash
+# Install required Python packages
+pip install -r requirements.txt
+```
+
+### Download NLTK Data
+
+The app will automatically download required NLTK data on first run. If you prefer to download manually:
+
+```bash
+python -c "import nltk; nltk.download('stopwords'); nltk.download('wordnet'); nltk.download('omw-1.4'); nltk.download('punkt')"
+```
+
+### Get the Trained Models
+
+The trained models are required to run the Streamlit app. Place these files in the project root directory:
+- `logistic_regression_model.pkl`
+- `tfidf_vectorizer.pkl`
+
+**Train Your Own Models**
+1. Open the Jupyter notebook: `Movie_Sentiment_Analysis.ipynb`
+2. Run all cells to train the models
+3. Run the export cell at the end to generate the `.pkl` files
+
+## Running the Application
+
+### Start the Streamlit App
+
+```bash
+# Make sure you're in the project directory
+cd movie-sentiment-analyzer-nlp
+
+# Run the app
+streamlit run app.py
+```
+
+The app will automatically open in your browser at `http://localhost:8501`
+
+### Stopping the Application
+
+Press `Ctrl + C` in the terminal to stop the server.
+
+## Quick Start Guide
+
+```bash
+# Complete setup in 4 commands
+git clone https://github.com/Ghadiiz/movie-sentiment-analyzer-nlp.git
+cd movie-sentiment-analyzer-nlp
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+**Note:** Ensure model files (`.pkl`) are in the project directory before running.
+
+## Troubleshooting
+
+**Issue: "Model files not found" error**
+```
+⚠️ Solution: Place logistic_regression_model.pkl and tfidf_vectorizer.pkl 
+   in the project root directory
+```
+
+**Issue: Port already in use**
+```bash
+# Use a different port
+streamlit run app.py --server.port 8502
+```
+
+**Issue: ModuleNotFoundError**
+```bash
+# Reinstall dependencies
+pip install -r requirements.txt
+```
+
 ## Documentation
 
 - **Prompt Log:** See `prompt.md` for all 18 AI prompts used in development
