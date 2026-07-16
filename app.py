@@ -7,6 +7,12 @@ from bs4 import BeautifulSoup
 import nltk
 import os
 
+st.set_page_config(
+    page_title="Movie Sentiment Analyzer",
+    page_icon="🎬",
+    layout="centered"
+)
+
 # Download NLTK data (first time only)
 try:
     stopwords.words('english')
@@ -90,7 +96,7 @@ def load_models():
         
         return model, vectorizer, True
     except FileNotFoundError:
-        st.error("⚠️ Model files not found! Please export models from Colab first.")
+        st.error("⚠️ Model files not found! Expected logistic_regression_model.pkl and tfidf_vectorizer.pkl in the project root.")
         return None, None, False
 
 # Load models
@@ -127,12 +133,6 @@ def predict_sentiment(text):
 # STREAMLIT APP UI
 # ============================================================================
 
-st.set_page_config(
-    page_title="Movie Sentiment Analyzer",
-    page_icon="🎬",
-    layout="centered"
-)
-
 # Header
 st.title("🎬 Movie Review Sentiment Analyzer")
 st.markdown("### AI-Powered NLP Sentiment Analysis")
@@ -149,19 +149,19 @@ with st.sidebar:
         **Dataset:** 50,000 IMDB Reviews
         
         **Data Split:**
-        - Training: 70% (35,000)
+        - Training: 70% (35,020)
         - Validation: 15% (7,480)
         - Test: 15% (7,500)
-        
+
         **Models Trained:**
-        1. Naive Bayes - 85.23%
-        2. **Logistic Regression - 88.59%** ⭐
-        3. Random Forest - 84.29%
-        4. LSTM - 87.09%
-        
+        1. Naive Bayes - 85.20%
+        2. **Logistic Regression - 88.60%** ⭐
+        3. Random Forest - 84.55%
+        4. LSTM - 86.81%
+
         **Selected Model:** Logistic Regression
-        - Validation Acc: 88.74%
-        - Test Acc: 88.59%
+        - Validation Acc: 88.89%
+        - Test Acc: 88.60%
         - Best balance of accuracy and efficiency
         """
     )
@@ -177,20 +177,17 @@ with st.sidebar:
     """)
     
     st.markdown("---")
-    st.markdown("Built for NLP Course Project")
-    st.markdown("November 2025")
+    st.markdown("[View source on GitHub](https://github.com/Ghadiiz/movie-sentiment-analyzer-nlp)")
 
 # Check if models are loaded
 if not models_loaded:
     st.error("⚠️ **Models not found!**")
     st.markdown("""
     ### How to fix:
-    1. Run the export cell at the end of your Colab notebook
-    2. Download these files:
+    1. Make sure these files are present in the project root:
        - `logistic_regression_model.pkl`
        - `tfidf_vectorizer.pkl`
-    3. Place them in the same directory as `app.py`
-    4. Restart the Streamlit app
+    2. Restart the Streamlit app
     """)
     st.stop()
 
@@ -304,8 +301,8 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: gray;'>
-    <p><strong>Movie Sentiment Analyzer</strong> | NLP Course Project 2025</p>
-    <p>Trained on 50,000 IMDB Movie Reviews | Best Model: Logistic Regression (88.59% Accuracy)</p>
+    <p><strong>Movie Sentiment Analyzer</strong></p>
+    <p>Trained on 50,000 IMDB Movie Reviews | Best Model: Logistic Regression (88.60% Accuracy)</p>
     <p>Powered by scikit-learn, NLTK, and Streamlit</p>
     </div>
     """,
