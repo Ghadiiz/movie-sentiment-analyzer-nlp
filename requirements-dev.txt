@@ -1,0 +1,9 @@
+# Development / notebook dependencies
+-r requirements.txt
+pandas==2.0.3
+tensorflow==2.14.0
+matplotlib==3.7.2
+seaborn==0.12.2
+wordcloud==1.9.2
+lxml==4.9.3
+jupyter==1.0.0
