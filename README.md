@@ -2,11 +2,11 @@
 
 Four models trained on 50,000 IMDB reviews to classify sentiment. **Logistic Regression beat an LSTM by 1.8 points** at 88.60% test accuracy — using a fraction of the compute.
 
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](REPLACE_WITH_STREAMLIT_URL)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://movie-sentiment-analyzer-nlp.streamlit.app)
 [![Python](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
-**▶️ [Try the live demo](REPLACE_WITH_STREAMLIT_URL)** — paste any review, get a prediction with a confidence score.
+**▶️ [Try the live demo](https://movie-sentiment-analyzer-nlp.streamlit.app)** — paste any review, get a prediction with a confidence score.
 
 ![App screenshot](docs/app-screenshot.png)
 
