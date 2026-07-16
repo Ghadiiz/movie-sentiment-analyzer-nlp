@@ -1,251 +1,163 @@
-# Movie Sentiment Analyzer - NLP Project
+# 🎬 Movie Review Sentiment Analyzer
 
-## Overview
-This project implements a comprehensive movie review sentiment analysis system using both traditional machine learning and deep learning approaches. It classifies IMDB movie reviews as positive or negative, demonstrating the full data science pipeline from data preprocessing with unit tests to model evaluation with proper train/validation/test methodology.
+Four models trained on 50,000 IMDB reviews to classify sentiment. **Logistic Regression beat an LSTM by 1.8 points** at 88.60% test accuracy — using a fraction of the compute.
 
-## Features
-- **Dataset:** 50,000 IMDB movie reviews (balanced: 25,000 positive, 25,000 negative)
-- **Data Split:** 70% Training (35,000) / 15% Validation (7,480) / 15% Test (7,500) with stratification
-- **Preprocessing:** Complete NLP pipeline with modular functions, comprehensive unit tests, and integration testing
-- **Models:** 4 different classifiers implemented and compared
-  - Multinomial Naive Bayes
-  - Logistic Regression ⭐ **Best Model** (selected via validation set)
-  - Random Forest (shows overfitting with 100% training accuracy)
-  - LSTM Deep Learning
-- **Evaluation:** Comprehensive benchmarking with validation/test comparison, confusion matrices, and performance metrics
-- **Testing:** Unit tests for clean_text(), remove_stopwords(), lemmatize_text(), and integration test for preprocess_pipeline()
-- **Application:** Interactive sentiment prediction function with confidence scores
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](REPLACE_WITH_STREAMLIT_URL)
+[![Python](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
-## Technologies Used
-- **Python 3.x**
-- **Libraries:**
-  - Data Processing: pandas, numpy
-  - NLP: nltk (stopwords, punkt, wordnet, lemmatization)
-  - Machine Learning: scikit-learn (Naive Bayes, Logistic Regression, Random Forest, TF-IDF)
-  - Deep Learning: TensorFlow/Keras (LSTM, Embedding layers)
-  - Visualization: matplotlib, seaborn
-  - HTML Parsing: BeautifulSoup (for cleaning review text)
+**▶️ [Try the live demo](REPLACE_WITH_STREAMLIT_URL)** — paste any review, get a prediction with a confidence score.
 
-## Methodology
+![App screenshot](docs/app-screenshot.png)
 
-### Data Preprocessing Pipeline
-Each preprocessing step includes comprehensive unit tests:
-
-1. **clean_text()** - HTML removal, lowercase conversion, special character removal
-   - Handles `<br>` tags specifically (common in IMDB dataset)
-   - Unit tests: HTML tags, mixed case, whitespace handling
-   - All tests: ✅ PASSED
-
-2. **remove_stopwords()** - NLTK stopword removal
-   - Custom stopword: 'br' (artifact from IMDB dataset)
-   - Unit tests: common stopwords, mixed content, 'br' removal
-   - All tests: ✅ PASSED
-
-3. **lemmatize_text()** - WordNet lemmatization
-   - Converts words to base forms
-   - Unit tests: verbs, plural nouns, adjectives
-   - All tests: ✅ PASSED
-
-4. **preprocess_pipeline()** - Combined pipeline
-   - Integration test with full movie review example
-   - Verifies all steps work together correctly
-   - Test: ✅ PASSED
-
-### Feature Engineering
-- **Classical ML Models:** TF-IDF vectorization (max 5,000 features)
-  - Fitted only on training data to prevent data leakage
-  - Vocabulary size: 5,000 features
-- **LSTM Model:** Tokenization and padding (max length 200)
-  - Vocabulary size: 5,000 most frequent words
-  - Embedding dimension: 128
-
-### Model Training Approach
-- **Validation-based selection:** Models evaluated on validation set to select the best performer
-- **Test set:** Held out for final unbiased evaluation
-- **No data leakage:** All feature engineering fitted only on training data
-- **Stratification:** Maintained class balance across all splits
+---
 
 ## Results
 
-### Model Performance Comparison
+Four classifiers, identical features, selected on a held-out validation set. The simplest competitive model won.
 
-#### Validation Set Performance
-| Model | Val Accuracy | Val Precision | Val Recall | Val F1-Score |
-|-------|--------------|---------------|------------|--------------|
-| Naive Bayes | 85.41% | 0.85 | 0.85 | 0.85 |
-| **Logistic Regression** | **88.74%** | **0.89** | **0.89** | **0.89** |
-| Random Forest | 85.05% | 0.85 | 0.85 | 0.85 |
-| LSTM | 87.58% | 0.88 | 0.88 | 0.88 |
+### Test set
 
-#### Test Set Performance
-| Model | Test Accuracy | Test Precision | Test Recall | Test F1-Score |
-|-------|---------------|----------------|-------------|---------------|
-| Naive Bayes | 85.23% | 0.85 | 0.85 | 0.85 |
-| **Logistic Regression** | **88.59%** | **0.89** | **0.89** | **0.89** |
-| Random Forest | 84.29% | 0.84 | 0.84 | 0.84 |
-| LSTM | 87.09% | 0.87 | 0.87 | 0.87 |
+| Model                   | Accuracy   | Precision | Recall   | F1       |
+| ----------------------- | ---------- | --------- | -------- | -------- |
+| **Logistic Regression** | **88.60%** | **0.88**  | **0.90** | **0.89** |
+| LSTM                    | 86.81%     | 0.85      | 0.90     | 0.87     |
+| Naive Bayes             | 85.20%     | 0.85      | 0.86     | 0.85     |
+| Random Forest           | 84.55%     | 0.85      | 0.84     | 0.84     |
 
-### Training Performance (Overfitting Check)
-| Model | Training Accuracy | Validation Accuracy | Overfitting? |
-|-------|-------------------|---------------------|--------------|
-| Naive Bayes | 86.66% | 85.41% | ❌ No (1.25% gap) |
-| Logistic Regression | 91.44% | 88.74% | ⚠️ Minimal (2.70% gap) |
-| **Random Forest** | **100.00%** | **85.05%** | ✅ **Yes (14.95% gap)** |
-| LSTM | 95.25% | 87.58% | ⚠️ Moderate (7.67% gap) |
+### Validation set — the basis for selection
 
-### Key Findings
-1. **Best Model: Logistic Regression**
-   - Selected based on highest validation accuracy (88.74%)
-   - Strong test performance (88.59%) confirms good generalization
-   - Minimal overfitting with only 2.70% training-validation gap
-   - Computationally efficient and interpretable
+| Model                   | Accuracy   | Precision | Recall   | F1       |
+| ----------------------- | ---------- | --------- | -------- | -------- |
+| **Logistic Regression** | **88.89%** | **0.88**  | **0.90** | **0.89** |
+| LSTM                    | 87.03%     | 0.85      | 0.89     | 0.87     |
+| Naive Bayes             | 85.39%     | 0.85      | 0.86     | 0.85     |
+| Random Forest           | 84.47%     | 0.85      | 0.83     | 0.84     |
 
-2. **Random Forest Overfitting**
-   - Perfect 100% training accuracy but only 85.05% validation accuracy
-   - 14.95% gap indicates severe overfitting
-   - Despite complexity, underperformed compared to Logistic Regression
+Logistic Regression won on validation and held up on test — a 0.29pp drop, meaning the selection generalized rather than overfitting the validation set.
 
-3. **LSTM Performance**
-   - Achieved 87.58% validation and 87.09% test accuracy
-   - Competitive but didn't outperform simpler Logistic Regression
-   - 7.67% training-validation gap shows moderate overfitting
-   - Requires significantly more computational resources
+### What training accuracy reveals that test accuracy hides
 
-4. **TF-IDF Effectiveness**
-   - Traditional TF-IDF features proved highly effective
-   - Simpler models (Naive Bayes, Logistic Regression) performed competitively
-   - Proper handling of 'br' artifacts was critical for success
+| Model               | Train       | Validation | Gap         | Reading            |
+| ------------------- | ----------- | ---------- | ----------- | ------------------ |
+| Naive Bayes         | 86.66%      | 85.39%     | 1.27pp      | Healthy            |
+| Logistic Regression | 91.46%      | 88.89%     | 2.57pp      | Minimal            |
+| LSTM                | 95.95%      | 87.03%     | 8.92pp      | Moderate           |
+| **Random Forest**   | **100.00%** | **84.47%** | **15.53pp** | Severe overfitting |
 
-5. **Preprocessing Impact**
-   - Unit-tested preprocessing pipeline ensured reliability
-   - Removing 'br' artifact significantly improved word frequency distributions
-   - Lemmatization and stopword removal enhanced model performance
+**Random Forest classified its training data perfectly and still finished last.** A model that memorizes every example it has seen has learned the training set, not the problem. Test accuracy alone would show Random Forest merely trailing; the train-validation gap shows _why_.
 
-### Example Predictions
-The notebook includes 5 diverse example reviews demonstrating:
-- Very positive reviews (high confidence)
-- Very negative reviews (high confidence)
-- Mixed sentiment reviews (lower confidence)
-- Different writing styles and lengths
-
+The LSTM tells a quieter version of the same story: 95.95% on data it trained on, 87.03% on data it hadn't. More capacity, more memorization, no accuracy gain over a linear model on TF-IDF features.
 
 ---
 
+## Methodology
 
-## Installation & Setup
+### Data and splits
 
-### Prerequisites
+- **Source:** `tensorflow.keras.datasets.imdb` — 50,000 reviews, balanced 25k positive / 25k negative
+- **Splits:** 35,020 train (70.0%) / 7,480 validation (15.0%) / 7,500 test (15.0%), stratified to preserve class balance
+- **Test set touched once**, for the final number. Never used for model selection.
 
-- Python 3.8 or higher
-- Git (for cloning the repository)
-- pip (Python package manager)
+### Preprocessing
 
-### Clone the Repository
+Each step is a standalone, unit-tested function:
 
-```bash
-# Clone the repository
-git clone https://github.com/Ghadiiz/movie-sentiment-analyzer-nlp.git
+| Function                | Does                                         | Tests cover                       |
+| ----------------------- | -------------------------------------------- | --------------------------------- |
+| `clean_text()`          | Strips HTML, lowercases, removes non-letters | HTML tags, mixed case, whitespace |
+| `remove_stopwords()`    | NLTK stopwords                               | Common stopwords, mixed content   |
+| `lemmatize_text()`      | WordNet lemmatization to base forms          | Verbs, plural nouns, adjectives   |
+| `preprocess_pipeline()` | Composes all three                           | Integration test on a full review |
 
-# Navigate to the project directory
-cd movie-sentiment-analyzer-nlp
-```
+**A note on the HTML handling.** `clean_text()` strips `<br>` tags and other markup, and is unit-tested against raw HTML input. On _this_ data it's a no-op: the Keras IMDB dataset ships pre-tokenized with punctuation and HTML already removed, and the pipeline decodes integer sequences back to text. The function is written defensively so it also works on the raw-HTML version of the dataset — but it isn't doing work here, and this README doesn't claim otherwise.
 
-### Install Dependencies
+### Features
 
-```bash
-# Install required Python packages
-pip install -r requirements.txt
-```
+- **Classical models:** TF-IDF capped at 5,000 features
+- **LSTM:** tokenization + padding to length 200, vocab 5,000, embedding dim 128
+- **No leakage:** the vectorizer is fit on training data only, then applied to validation and test
 
-### Download NLTK Data
+---
 
-The app will automatically download required NLTK data on first run. If you prefer to download manually:
+## Quick Start
 
-```bash
-python -c "import nltk; nltk.download('stopwords'); nltk.download('wordnet'); nltk.download('omw-1.4'); nltk.download('punkt')"
-```
-
-### Get the Trained Models
-
-The trained models are required to run the Streamlit app. Place these files in the project root directory:
-- `logistic_regression_model.pkl`
-- `tfidf_vectorizer.pkl`
-
-**Train Your Own Models**
-1. Open the Jupyter notebook: `Movie_Sentiment_Analysis.ipynb`
-2. Run all cells to train the models
-3. Run the export cell at the end to generate the `.pkl` files
-
-## Running the Application
-
-### Start the Streamlit App
+**Requires Python 3.11.** TensorFlow 2.14 doesn't support 3.12+, and the pinned numpy has no wheels above 3.11.
 
 ```bash
-# Make sure you're in the project directory
-cd movie-sentiment-analyzer-nlp
-
-# Run the app
-streamlit run app.py
-```
-
-The app will automatically open in your browser at `http://localhost:8501`
-
-### Stopping the Application
-
-Press `Ctrl + C` in the terminal to stop the server.
-
-## Quick Start Guide
-
-```bash
-# Complete setup in 4 commands
 git clone https://github.com/Ghadiiz/movie-sentiment-analyzer-nlp.git
 cd movie-sentiment-analyzer-nlp
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-**Note:** Ensure model files (`.pkl`) are in the project directory before running.
+Opens at `http://localhost:8501`. **The trained model and vectorizer ship with the repo**, so this runs out of the box — no training required. NLTK corpora download automatically on first launch.
 
-## Troubleshooting
+### Retraining from scratch
 
-**Issue: "Model files not found" error**
-```
-⚠️ Solution: Place logistic_regression_model.pkl and tfidf_vectorizer.pkl 
-   in the project root directory
-```
-
-**Issue: Port already in use**
 ```bash
-# Use a different port
-streamlit run app.py --server.port 8502
+pip install -r requirements-dev.txt   # adds TensorFlow and notebook tooling
+jupyter notebook Movie_Sentiment_Analysis.ipynb
 ```
 
-**Issue: ModuleNotFoundError**
-```bash
-# Reinstall dependencies
-pip install -r requirements.txt
+Run all cells. The final cell regenerates the `.pkl` files. Budget 20–50 minutes on CPU — the LSTM is the slow part.
+
+<details>
+<summary><b>Troubleshooting</b></summary>
+
+| Problem                      | Cause and fix                                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------------------------- |
+| `InconsistentVersionWarning` | Your scikit-learn differs from the version that pickled the model. Install `scikit-learn==1.3.2`. |
+| `ModuleNotFoundError`        | `pip install -r requirements.txt`                                                                 |
+| Port already in use          | `streamlit run app.py --server.port 8502`                                                         |
+| numpy fails to build         | You're on Python 3.12+. Use 3.11.                                                                 |
+
+</details>
+
+---
+
+## Example Predictions
+
+| Review                                                                | Prediction | Confidence |
+| --------------------------------------------------------------------- | ---------- | ---------- |
+| "This movie was absolutely fantastic! I loved every single moment."   | Positive   | 94.56%     |
+| "Terrible acting, weak plot, and poor direction. Avoid at all costs." | Negative   | 99.99%     |
+| "It had its moments, but overall it was just an average film."        | Negative   | 78.82%     |
+
+The third one is the informative case: a genuinely mixed review, and the model's confidence drops to 78.82% instead of asserting a confident answer. Binary classification has no "neutral" to reach for, so ambivalence surfaces as low confidence rather than a wrong-but-certain label.
+
+---
+
+## Project Structure
+
 ```
+movie-sentiment-analyzer-nlp/
+├── app.py                          # Streamlit app — loads model, serves predictions
+├── Movie_Sentiment_Analysis.ipynb  # EDA → preprocessing → training → evaluation
+├── logistic_regression_model.pkl   # Trained classifier
+├── tfidf_vectorizer.pkl            # Fitted vectorizer (train-only fit)
+├── requirements.txt                # App runtime deps
+├── requirements-dev.txt            # Notebook / training deps
+└── prompt_log.md                   # Development methodology log
+```
+
+## Tech Stack
+
+**App:** Streamlit · scikit-learn · NLTK · BeautifulSoup
+**Notebook:** pandas · NumPy · TensorFlow/Keras · matplotlib · seaborn
+
+## Limitations
+
+- **Domain-specific.** Trained on movie reviews; would need retraining for product reviews or social media.
+- **Binary only.** No neutral class. Mixed reviews surface as low confidence, not as a category.
+- **No word order.** TF-IDF is a bag of words — sarcasm and negation scope are invisible to it. "Not good" and "good" share a token.
+- **English only.**
 
 ## Documentation
 
-- **Prompt Log:** See `prompt.md` for all 18 AI prompts used in development
-- **Code Comments:** Comprehensive inline documentation throughout the notebook
-- **Test Results:** All unit tests display PASSED/FAILED status with examples
-- **Docstrings:** Every function includes detailed docstrings explaining parameters and returns
+- **[`prompt_log.md`](prompt_log.md)** — a record of the 18 AI prompts used during development, documenting how the pipeline was scaffolded phase by phase.
+- Every function carries a docstring; unit tests print input, expected, actual, and PASS/FAIL per case.
 
-## Performance Summary
+## License
 
-🏆 **Winner: Logistic Regression**
-- **Validation Accuracy:** 88.74%
-- **Test Accuracy:** 88.59%
-- **Selected for:** Best validation performance, minimal overfitting, computational efficiency
-
-📊 **All Models:**
-1. Logistic Regression: 88.59% test accuracy
-2. LSTM: 87.09% test accuracy
-3. Naive Bayes: 85.23% test accuracy
-4. Random Forest: 84.29% test accuracy (despite 100% training accuracy)
-
----
-
-**Note:** This project demonstrates ML best practices including proper data splitting, validation-based model selection, preventing data leakage, comprehensive testing, and transparent evaluation methodology. The surprising result that classical ML (Logistic Regression) outperformed deep learning (LSTM) highlights the importance of proper model selection and the fact that more complex models don't always guarantee better performance.
+MIT — see [LICENSE](LICENSE).
